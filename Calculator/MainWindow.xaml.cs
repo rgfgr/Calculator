@@ -49,7 +49,7 @@ namespace Calculator
             }
             try
             {
-                tb.Text += "=" + Result("(" + tb.Text + ")");
+                tbout.Text = Result("(" + tb.Text + ")");
             }
             catch (Exception)
             {
@@ -69,7 +69,7 @@ namespace Calculator
 
                 if (containParen)
                 {
-                    op = Parens(op.Substring(1, op.Length - 2), op.Substring(1).IndexOf("("));
+                    op = Parens(op, op.Substring(1).IndexOf("(") + 1);
                 }
                 else if (containMulti || containDivis)
                 {
@@ -85,9 +85,9 @@ namespace Calculator
                 }
                 else
                 {
-                    return op;
+                    return op.Substring(1, op.Length - 2);
                 }
-                Console.WriteLine(op);
+                Console.WriteLine(op + ": Result");
             }
         }
 
@@ -110,12 +110,13 @@ namespace Calculator
                 }
                 i++;
             } while (parenSt != parenEn);
-            Console.WriteLine(op.Substring(start, length));
-            return Result(op.Substring(start, length));
+            Console.WriteLine(op.Substring(0, start) + ":" + op.Substring(start, length) + ":" + op.Substring(start + length) + ": Parens");
+            return op.Substring(0, start) + Result(op.Substring(start, length)) + op.Substring(start + length);
         }
 
         private string GetSingle(string text, int sign)
         {
+            Console.WriteLine(text + ":" + sign + ": GetSingle");
             string opMath = "";
             string opPart1 = text.Substring(0, sign);
             for (int i = opPart1.Length - 1; i >= 0; i--)
@@ -124,7 +125,7 @@ namespace Calculator
                 {
                     opMath = opPart1.Substring(i + 1);
                     opPart1 = opPart1.Substring(0, i + 1);
-                    Console.WriteLine("yes 1");
+                    Console.WriteLine("yes 1: GetSingle");
                     break;
                 }
             }
@@ -136,18 +137,18 @@ namespace Calculator
                 {
                     opMath += opPart2.Substring(0, i);
                     opPart2 = opPart2.Substring(i);
-                    Console.WriteLine("yes 2");
+                    Console.WriteLine("yes 2: GetSingle");
                     break;
                 }
             }
-            Console.WriteLine(opPart1 + ":" + opMath + ":" + opPart2);
-            Console.WriteLine(opPart1 + ":" + DoMath(opMath, opMath.IndexOf(text[sign])) + ":" + opPart2);
+            Console.WriteLine(opPart1 + ":" + opMath + ":" + opPart2 + ": GetSingle");
+            Console.WriteLine(opPart1 + ":" + DoMath(opMath, opMath.IndexOf(text[sign])) + ":" + opPart2 + ": GetSingle");
             return opPart1 + DoMath(opMath, opMath.IndexOf(text[sign])) + opPart2;
         }
 
         private string DoMath(string math, int sign)
         {
-            Console.WriteLine(math + ":" + sign);
+            Console.WriteLine(math + ":" + sign + ": DoMath");
             double math1 = Convert.ToDouble(math.Substring(0, sign));
             double math2 = Convert.ToDouble(math.Substring(sign + 1));
             switch (math[sign])
@@ -165,7 +166,7 @@ namespace Calculator
                     math = (math1 - math2).ToString();
                     break;
             }
-            Console.WriteLine(math);
+            Console.WriteLine(math + ": DoMath");
             return math;
         }
 
@@ -177,6 +178,7 @@ namespace Calculator
         private void Del_Click(object sender, RoutedEventArgs e)
         {
             tb.Text = "";
+            tbout.Text = "";
             parenMis = 0;
             parenEnd.IsEnabled = parenMis > 0;
         }

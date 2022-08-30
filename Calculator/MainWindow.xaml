@@ -19,7 +19,7 @@
             </Button.Background>
         </Button>
 
-        <TextBox Height="38" TextWrapping="Wrap" VerticalAlignment="Top" Margin="10,20,0,0" HorizontalAlignment="Left" Width="201" FontSize="20" Background="Black" BorderThickness="2" Name="tb" Text="">
+        <TextBox Height="38" TextWrapping="Wrap" VerticalAlignment="Top" Margin="9,0,0,0" HorizontalAlignment="Left" Width="201" FontSize="20" Background="Black" BorderThickness="2" Name="tb" Text="">
             <TextBox.Foreground>
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" />
             </TextBox.Foreground>
@@ -235,5 +235,11 @@
                 <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowTextColorKey}}"/>
             </Button.Background>
         </Button>
+        <TextBox Height="38" TextWrapping="Wrap" VerticalAlignment="Top" Margin="9,38,0,0" HorizontalAlignment="Left" Width="201" FontSize="20" Background="Black" BorderThickness="2" x:Name="tbout" Text="">
+            <TextBox.Foreground>
+                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowColorKey}}" />
+            </TextBox.Foreground>
+
+        </TextBox>
     </Grid>
 </Window>
