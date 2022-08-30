@@ -20,7 +20,7 @@ namespace Calculator
     /// </summary>
     public partial class MainWindow : Window
     {
-        private int parento = 0;
+        private int parenMis = 0;
         public MainWindow()
         {
             InitializeComponent();
@@ -32,18 +32,18 @@ namespace Calculator
             tb.Text += text;
             if (text == "(")
             {
-                parento += 1;
+                parenMis++;
             }
             else if (text == ")")
             {
-                parento -= 1;
+                parenMis--;
             }
-            parenEnd.IsEnabled = parento > 0;
+            parenEnd.IsEnabled = parenMis > 0;
         }
 
         private void Result_click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < parento; i++)
+            for (int i = 0; i < parenMis; i++)
             {
                 tb.Text += ")";
             }
@@ -69,7 +69,7 @@ namespace Calculator
 
                 if (containParen)
                 {
-
+                    op = Parens(op.Substring(1, op.Length - 2), op.Substring(1).IndexOf("("));
                 }
                 else if (containMulti || containDivis)
                 {
@@ -85,19 +85,33 @@ namespace Calculator
                 }
                 else
                 {
-                    return op.Substring(1, op.Length - 2);
+                    return op;
                 }
+                Console.WriteLine(op);
             }
         }
 
         private string Parens(string op, int start)
         {
+            int length = 0;
             int parenSt = 0;
             int parenEn = 0;
-            for (int i = start; parenSt != parenEn; i++)
+            int i = start;
+            do
             {
-
-            }
+                length++;
+                if (op[i] == '(')
+                {
+                    parenSt++;
+                }
+                if (op[i] == ')')
+                {
+                    parenEn++;
+                }
+                i++;
+            } while (parenSt != parenEn);
+            Console.WriteLine(op.Substring(start, length));
+            return Result(op.Substring(start, length));
         }
 
         private string GetSingle(string text, int sign)
@@ -127,11 +141,13 @@ namespace Calculator
                 }
             }
             Console.WriteLine(opPart1 + ":" + opMath + ":" + opPart2);
+            Console.WriteLine(opPart1 + ":" + DoMath(opMath, opMath.IndexOf(text[sign])) + ":" + opPart2);
             return opPart1 + DoMath(opMath, opMath.IndexOf(text[sign])) + opPart2;
         }
 
         private string DoMath(string math, int sign)
         {
+            Console.WriteLine(math + ":" + sign);
             double math1 = Convert.ToDouble(math.Substring(0, sign));
             double math2 = Convert.ToDouble(math.Substring(sign + 1));
             switch (math[sign])
@@ -149,6 +165,7 @@ namespace Calculator
                     math = (math1 - math2).ToString();
                     break;
             }
+            Console.WriteLine(math);
             return math;
         }
 
@@ -160,12 +177,23 @@ namespace Calculator
         private void Del_Click(object sender, RoutedEventArgs e)
         {
             tb.Text = "";
+            parenMis = 0;
+            parenEnd.IsEnabled = parenMis > 0;
         }
 
         private void R_Click(object sender, RoutedEventArgs e)
         {
             if (tb.Text.Length > 0)
             {
+                if (tb.Text.EndsWith(")"))
+                {
+                    parenMis++;
+                }
+                else if (tb.Text.EndsWith("("))
+                {
+                    parenMis--;
+                }
+                parenEnd.IsEnabled = parenMis > 0;
                 tb.Text = tb.Text.Substring(0, tb.Text.Length - 1);
             }
         }
