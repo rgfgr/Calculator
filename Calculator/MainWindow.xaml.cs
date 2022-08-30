@@ -21,6 +21,7 @@ namespace Calculator
     public partial class MainWindow : Window
     {
         private int parenMis = 0;
+        private bool canWrite = true;
         public MainWindow()
         {
             InitializeComponent();
@@ -28,6 +29,7 @@ namespace Calculator
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            if (!canWrite) return;
             string text = ((Button)sender).Content.ToString();
             tb.Text += text;
             if (text == "(")
@@ -43,10 +45,11 @@ namespace Calculator
 
         private void Result_click(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < parenMis; i++)
+            for (int i = 0; i < parenMis && canWrite; i++)
             {
                 tb.Text += ")";
             }
+            canWrite = false;
             try
             {
                 tbout.Text = Result("(" + tb.Text + ")");
@@ -177,6 +180,7 @@ namespace Calculator
 
         private void Del_Click(object sender, RoutedEventArgs e)
         {
+            canWrite = true;
             tb.Text = "";
             tbout.Text = "";
             parenMis = 0;
@@ -185,6 +189,7 @@ namespace Calculator
 
         private void R_Click(object sender, RoutedEventArgs e)
         {
+            if (!canWrite) return;
             if (tb.Text.Length > 0)
             {
                 if (tb.Text.EndsWith(")"))
