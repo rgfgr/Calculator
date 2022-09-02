@@ -189,8 +189,7 @@ namespace Calculator
 
         private void R_Click(object sender, RoutedEventArgs e)
         {
-            if (!canWrite) return;
-            if (tb.Text.Length > 0)
+            if (canWrite && tb.Text.Length > 0)
             {
                 if (tb.Text.EndsWith(")"))
                 {
