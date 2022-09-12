@@ -29,18 +29,20 @@ namespace Calculator
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (!canWrite) return;
-            string text = ((Button)sender).Content.ToString();
-            tb.Text += text;
-            if (text == "(")
+            if (canWrite)
             {
-                parenMis++;
+                string text = ((Button)sender).Content.ToString();
+                tb.Text += text == "Pow" ? "^" : text;
+                if (text == "(")
+                {
+                    parenMis++;
+                }
+                else if (text == ")")
+                {
+                    parenMis--;
+                }
+                parenEnd.IsEnabled = parenMis > 0;
             }
-            else if (text == ")")
-            {
-                parenMis--;
-            }
-            parenEnd.IsEnabled = parenMis > 0;
         }
 
         private void Result_click(object sender, RoutedEventArgs e)
@@ -64,15 +66,18 @@ namespace Calculator
         {
             while (true)
             {
-                bool containParen = op.Substring(1).Contains("(");
                 bool containMulti = op.Contains("*");
                 bool containDivis = op.Contains("/");
                 bool containAdd = op.Contains("+");
                 bool containSub = op.Contains("-");
 
-                if (containParen)
+                if (op.Substring(1).Contains("("))
                 {
                     op = Parens(op, op.Substring(1).IndexOf("(") + 1);
+                }
+                else if (op.Contains("^"))
+                {
+                    op = Powers(op, op.IndexOf("^"));
                 }
                 else if (containMulti || containDivis)
                 {
@@ -107,19 +112,24 @@ namespace Calculator
                 {
                     parenSt++;
                 }
-                if (op[i] == ')')
+                else if (op[i] == ')')
                 {
                     parenEn++;
                 }
                 i++;
             } while (parenSt != parenEn);
-            Console.WriteLine(op.Substring(0, start) + ":" + op.Substring(start, length) + ":" + op.Substring(start + length) + ": Parens");
+            Console.WriteLine($"{op.Substring(0, start)}:{op.Substring(start, length)}:{op.Substring(start + length)}: Parens");
             return op.Substring(0, start) + Result(op.Substring(start, length)) + op.Substring(start + length);
+        }
+
+        private string Powers(string op, int sign)
+        {
+            return op;
         }
 
         private string GetSingle(string text, int sign)
         {
-            Console.WriteLine(text + ":" + sign + ": GetSingle");
+            Console.WriteLine($"{text}:{sign}: GetSingle");
             string opMath = "";
             string opPart1 = text.Substring(0, sign);
             for (int i = opPart1.Length - 1; i >= 0; i--)
@@ -144,14 +154,14 @@ namespace Calculator
                     break;
                 }
             }
-            Console.WriteLine(opPart1 + ":" + opMath + ":" + opPart2 + ": GetSingle");
-            Console.WriteLine(opPart1 + ":" + DoMath(opMath, opMath.IndexOf(text[sign])) + ":" + opPart2 + ": GetSingle");
+            Console.WriteLine($"{opPart1}:{opMath}:{opPart2}: GetSingle");
+            Console.WriteLine($"{opPart1}:{DoMath(opMath, opMath.IndexOf(text[sign]))}:{opPart2}: GetSingle");
             return opPart1 + DoMath(opMath, opMath.IndexOf(text[sign])) + opPart2;
         }
 
         private string DoMath(string math, int sign)
         {
-            Console.WriteLine(math + ":" + sign + ": DoMath");
+            Console.WriteLine($"{math}:{sign}: DoMath");
             double math1 = Convert.ToDouble(math.Substring(0, sign));
             double math2 = Convert.ToDouble(math.Substring(sign + 1));
             switch (math[sign])
@@ -168,8 +178,11 @@ namespace Calculator
                 case '-':
                     math = (math1 - math2).ToString();
                     break;
+                //Not used
+                default:
+                    break;
             }
-            Console.WriteLine(math + ": DoMath");
+            Console.WriteLine($"{math}: DoMath");
             return math;
         }
 
