@@ -32,7 +32,7 @@ namespace Calculator
             if (canWrite)
             {
                 string text = ((Button)sender).Content.ToString();
-                tb.Text += text == "Pow" ? "^" : text;
+                tb.Text += text;
                 if (text == "(")
                 {
                     parenMis++;
@@ -56,9 +56,10 @@ namespace Calculator
             {
                 tbout.Text = Result("(" + tb.Text + ")");
             }
-            catch (Exception)
+            catch (Exception e1)
             {
-                tb.Text = "Error";
+                Console.WriteLine(e1.ToString());
+                tb.Text = e1.Message;
             }
         }
 
@@ -74,10 +75,6 @@ namespace Calculator
                 if (op.Substring(1).Contains("("))
                 {
                     op = Parens(op, op.Substring(1).IndexOf("(") + 1);
-                }
-                else if (op.Contains("^"))
-                {
-                    op = Powers(op, op.IndexOf("^"));
                 }
                 else if (containMulti || containDivis)
                 {
@@ -122,16 +119,11 @@ namespace Calculator
             return op.Substring(0, start) + Result(op.Substring(start, length)) + op.Substring(start + length);
         }
 
-        private string Powers(string op, int sign)
+        private string GetSingle(string op, int sign)
         {
-            return op;
-        }
-
-        private string GetSingle(string text, int sign)
-        {
-            Console.WriteLine($"{text}:{sign}: GetSingle");
+            Console.WriteLine($"{op}:{sign}: GetSingle");
             string opMath = "";
-            string opPart1 = text.Substring(0, sign);
+            string opPart1 = op.Substring(0, sign);
             for (int i = opPart1.Length - 1; i >= 0; i--)
             {
                 if (opPart1[i] == '*' || opPart1[i] == '/' || opPart1[i] == '+' || opPart1[i] == '-' || opPart1[i] == '(')
@@ -143,7 +135,7 @@ namespace Calculator
                 }
             }
 
-            string opPart2 = text.Substring(sign);
+            string opPart2 = op.Substring(sign);
             for (int i = 1; i < opPart2.Length; i++)
             {
                 if (opPart2[i] == '*' || opPart2[i] == '/' || opPart2[i] == '+' || opPart2[i] == '-' || opPart2[i] == ')')
@@ -155,8 +147,7 @@ namespace Calculator
                 }
             }
             Console.WriteLine($"{opPart1}:{opMath}:{opPart2}: GetSingle");
-            Console.WriteLine($"{opPart1}:{DoMath(opMath, opMath.IndexOf(text[sign]))}:{opPart2}: GetSingle");
-            return opPart1 + DoMath(opMath, opMath.IndexOf(text[sign])) + opPart2;
+            return opPart1 + DoMath(opMath, opMath.IndexOf(op[sign])) + opPart2;
         }
 
         private string DoMath(string math, int sign)
